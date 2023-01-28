@@ -2,3 +2,4 @@ openai
 tiktoken
 pdfplumber
 Flask
+boto3
