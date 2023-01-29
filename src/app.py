@@ -1,5 +1,5 @@
 from flask import Flask, request
-from extract import Extract, construct_prompt, answer_question
+from extract import Extract
 import requests
 import cohere
 
@@ -7,7 +7,7 @@ import whisper
 import random
 import string
 import os
-from typing import List, Dict
+from typing import List
 import tiktoken
 import openai
 
@@ -23,7 +23,7 @@ model = whisper.load_model(WHISPER_MODEL_NAME)
 
 MAX_SECTION_LEN = 500
 SEPARATOR = "\n* "
-ENCODING = "cl100k_base"  # encoding for text-embedding-ada-002
+ENCODING = "cl100k_base"
 
 encoding = tiktoken.get_encoding(ENCODING)
 separator_len = len(encoding.encode(SEPARATOR))
@@ -77,30 +77,42 @@ def extract():
 
 
 @app.route("/summarize/", methods=['GET', 'POST'])
-def summarize_page():
-    text_to_summarize = request.args.get('text_to_summarize')
-    
-
-    prediction = co.generate(
-        model='xlarge',
-        prompt=f"{text_to_summarize}\nTLDR:",
-        return_likelihoods='GENERATION',
-        #stop_sequences=['.'],
-        max_tokens=300,
-        temperature=0.2,
-    )
-    return prediction.generations[0].text
+def summarize_pages():
+    text_pages = request.args.get('text_pages') # list of strings
+    use_cohere = request.args.get('use_cohere')
+    def summarize_using_cohere(text: str) -> str:
+        prediction = co.generate(
+            model='xlarge',
+            prompt=f"{text}\nTLDR:",
+            return_likelihoods='GENERATION',
+            #stop_sequences=['.'],
+            max_tokens=300,
+            temperature=0.2,
+        ).generations[0].text
+        return prediction
+    def summarize_using_gpt3(text: str) -> str:
+        COMPLETIONS_API_PARAMS = {
+            "temperature": 0.0,
+            "max_tokens": 300,
+            "model": COMPLETIONS_MODEL,
+        }
+        response = openai.Completion.create(
+                    prompt=text,
+                    **COMPLETIONS_API_PARAMS
+                )
+        return response["choices"][0]["text"].strip(" \n")
+    if use_cohere:
+        return ''.join([summarize_using_cohere(text) for text in text_pages])
+    else:
+        return ''.join([summarize_using_gpt3(text) for text in text_pages])
 
 
 @app.route("/answer/", methods=['GET', 'POST'])
 def answer_question():
     question = request.args.get('question')
     most_relevant_document_sections = request.args.get('most_relevant_document_sections')
-    show_prompt = request.args.get('show_prompt')
     
     prompt = construct_prompt(question, most_relevant_document_sections)
-    if show_prompt:
-        print(prompt)
     COMPLETIONS_API_PARAMS = {
         "temperature": 0.0,
         "max_tokens": 300,

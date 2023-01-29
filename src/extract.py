@@ -12,7 +12,7 @@ from docx import Document
 import config
 openai.api_key = config.OPENAI_API_KEY
 
-from settings import WHISPER_MODEL_NAME
+from settings import WHISPER_MODEL_NAME, EMBEDDING_MODEL
 
 
 class Extract:
@@ -106,7 +106,7 @@ class Extract:
         # This program takes a list of strings, and returns a dictionary in the following format: {"pages_text": ["page1", "page2", ...], "pages_embeddings": arr.tolist()}
         
         def get_embedding(page: str):
-            result = openai.Embedding.create(model=config.EMBEDDING_MODEL, input=page)
+            result = openai.Embedding.create(model=EMBEDDING_MODEL, input=page)
             return result["data"][0]["embedding"]
 
         arr = np.array([get_embedding(page) for page in self.text_pages])
