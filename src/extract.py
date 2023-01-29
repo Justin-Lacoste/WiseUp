@@ -68,8 +68,6 @@ class Extract:
             
 
 
-# extra : if page less than 
-
 def get_embedding(text: str, model: str=EMBEDDING_MODEL) -> list[float]:
     result = openai.Embedding.create(model=model, input=text)
     return result["data"][0]["embedding"]
