@@ -8,8 +8,7 @@ import numpy as np
 pdf_file = 'src\Test\Creating Character Arcs by K.M. Weiland.pdf'
 pdf_file = 'Test\Floating Point.pdf'
 
-COMPLETIONS_MODEL = "text-davinci-003"
-EMBEDDING_MODEL = "text-embedding-ada-002"
+from settings import EMBEDDING_MODEL, COMPLETIONS_MODEL
 
 openai.api_key = ""
 
