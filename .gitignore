@@ -6,6 +6,7 @@ dist
 __pycache__
 *.egg-info
 _build
+<<<<<<< Updated upstream
 #remove config keys from git
 src/config.py
 config.py
@@ -170,3 +171,8 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+=======
+src/embeddings_tests.ipynb
+src/extract.ipynb
+src/extract.ipynb
+>>>>>>> Stashed changes
