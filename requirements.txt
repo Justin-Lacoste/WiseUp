@@ -4,3 +4,4 @@ pdfplumber
 Flask
 boto3
 numpy
+cohere
