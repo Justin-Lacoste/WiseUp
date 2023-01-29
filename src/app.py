@@ -52,15 +52,15 @@ def extract():
         f.write(file.read())
     
     extract = Extract()
-    text_pages = extract.extract_pages(rand_file_name, file_type)
+    transcript_blocks = extract.extract_pages(rand_file_name, file_type)
     os.remove(rand_file_name)
-    text_pages, embedding_pages = extract.get_dict()
+    transcript_blocks, embedding_pages = extract.get_dict()
     
     dict_info = {
         "title": title,
         "directory": directory,
         "UUID": UUID,
-        "data": {"text_pages": text_pages, "embeddings": embedding_pages}
+        "data": {"text_pages": transcript_blocks, "embeddings": embedding_pages} # Those aren't actually text pages
     }
     response = requests.post('http://107.22.146.14:3000/json_to_s3', json=dict_info, headers={'Content-Type': 'application/json'})
 

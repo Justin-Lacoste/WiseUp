@@ -16,7 +16,7 @@ from settings import WHISPER_MODEL_NAME, EMBEDDING_MODEL
 
 class Extract:
     def __init__(self):
-        self.transcript
+        self.transcript = ""
         self.transcript_blocks = []
         
     def extract_pages(self, file_or_link_or_str: str, str_type: str) -> List[str]:
@@ -101,29 +101,4 @@ class Extract:
 
 
 
-def get_json(transcript_blocks: List[str]):
-    # This program takes a list of strings, and returns a json file in the following format: {pages_text: [page1, page2, ...], pages_embeddings: arr.tolist()}
-    
-    def get_embedding(block: str):
-        result = openai.Embedding.create(model=EMBEDDING_MODEL, input=block)
-        return result["data"][0]["embedding"]
-
-    arr = np.array([get_embedding(block) for block in transcript_blocks])
-    return json.dumps({"transcript_blocks": transcript_blocks, "block_embeddings": arr.tolist()})
-
-
-if __name__ == "__main__":
-    #testing
-    
-    # PDF
-    pdf_file = r'src\Test\Floating Point.pdf'
-    text_and_embeddings: List[Dict[str, str]] = []
-
-    e = Extract()
-
-    pages_text = e.pdf2text(pdf_file)
-    e.reformat_pages()
-
-    json = get_json(e.text_pages)
-    print(json)
 
