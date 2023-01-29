@@ -3,6 +3,7 @@ import pdfplumber
 from typing import List
 
 import pytube
+import requests
 import whisper
 
 import openai
@@ -70,7 +71,21 @@ class Extract:
         return self.mp4_to_text(video_path)
 
     def github2text(self, github_repo_link):
-        raise NotImplementedError("github2text")
+        user = github_repo_link.split("/")[-2]
+        repo = github_repo_link.split("/")[-1]
+        path = "/".join(github_repo_link.split("/")[4:])
+        response = requests.get(github_repo_link.format(user=user, repo=repo, path=path))
+        
+        contents = response.json()
+        for content in contents:
+            if content["type"] == "file":
+                file_url = content["download_url"]
+                file_name = content["name"]
+                # Get string from file
+                file_str = requests.get(file_url).text
+                self.text_pages.append(file_str)
+        return self.text_pages
+
 
     def word_office_to_text(self, word_file_path):
         document = Document(word_file_path)
