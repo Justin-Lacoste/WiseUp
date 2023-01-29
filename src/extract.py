@@ -24,6 +24,21 @@ class Extract:
                 text = format_text(text)
                 self.text_pages.append(text)
         return self.text_pages
+
+    def mp3_to_text(self, mp3_path):
+        raise NotImplementedError("mp3_to_text")
+
+    def mp4_to_text(self, mp4_path):
+        raise NotImplementedError("mp4_to_text")
+
+    def youtube2text(self, youtube_link):
+        raise NotImplementedError("youtube2text")
+
+    def github2text(self, github_repo_link):
+        raise NotImplementedError("github2text")
+
+    def word_office_to_text(self, word_file_path):
+        raise NotImplementedError("word_office_to_text")
     
     def reformat_pages(self):
         low_thresh = 150
