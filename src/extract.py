@@ -80,8 +80,6 @@ class Extract:
         for content in contents:
             if content["type"] == "file":
                 file_url = content["download_url"]
-                file_name = content["name"]
-                # Get string from file
                 file_str = requests.get(file_url).text
                 n = 5000
                 self.text_pages.extend([file_str[i:i+n] for i in range(0, len(file_str), n)])
