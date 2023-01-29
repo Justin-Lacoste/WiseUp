@@ -17,28 +17,28 @@ from settings import WHISPER_MODEL_NAME
 
 class Extract:
     def __init__(self):
-        self.text_pages: List[str] = []
+        self.transcript = ""
 
     def text2text_pages(self, text:str):
-        #separer text en pages de ~500 mots
-        raise NotImplementedError("text2text_pages not implemented")
+        self.transcript = text
+        return self.transcript
 
     def pdf2text(self, pdf_path):
         with pdfplumber.open(pdf_path) as pdf:
             for page in pdf.pages:
                 text = page.extract_text().replace("\t", " ").replace("\n", " ").replace("\xa0", " ")
-                self.text_pages.append(text)
-        return self.text_pages
+                self.transcript += text
+        return self.transcript
 
     def mp3_to_text(self, mp3_path):
         model = whisper.load_model(WHISPER_MODEL_NAME)
-        self.text_pages = model.transcribe(mp3_path, language='english')["text"]
-        return self.text_pages
+        self.transcript = model.transcribe(mp3_path, language='english')["text"]
+        return self.transcript
 
     def mp4_to_text(self, mp4_path):
         model = whisper.load_model(WHISPER_MODEL_NAME)
-        self.text_pages = model.transcribe(mp4_path, language='english')["text"]
-        return self.text_pages
+        self.transcript = model.transcribe(mp4_path, language='english')["text"]
+        return self.transcript
 
     def youtube2text(self, youtube_link):
         data = pytube.YouTube(youtube_link)
@@ -51,8 +51,23 @@ class Extract:
 
     def word_office_to_text(self, word_file_path):
         raise NotImplementedError("word_office_to_text")
+
+    def transcript_to_blocks(self):
+        block_size = 200 #
+        transcript_sentences = self.transcript.split(". ")
+        transcript_blocks = []
+        for i, sentence in enumerate(transcript_sentences):
+            # if the sentence is huge, add it to its own block
+            if len(sentence) > block_size:
+                transcript_blocks.append(sentence)
+            # 3/4 time, add sentence to block
+            elif i % 4 != 3:
+                transcript_blocks[-1] += f"{sentence}. "
+            else:
+                transcript_blocks.append(sentence)
+        return transcript_blocks
     
-    def reformat_pages(self):
+    """def reformat_pages(self):
         low_thresh = 150
         high_thresh = 750
         
@@ -74,7 +89,8 @@ class Extract:
             #condition 3, add the page to a new reformatting page
             else:
                 reformatted_pages.append(page)
-        self.text_pages = reformatted_pages
+        self.text_pages = reformatted_pages"""
+
             
 
 
