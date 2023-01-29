@@ -6,20 +6,17 @@ openai.api_key = config.OPENAI_API_KEY
 prompt = "ENTER TEXT HERE"
   
 
-def gpt3_summarize_page(prompt):
-    prediction = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=f"{prompt}\ntl;dr: ",
-        temperature=0.5,
-        max_tokens=300,
-    )
-    return prediction["choices"][0]["text"]
-
 def gpt3_summarize_pages_text(pages_text):
     summary_pages = [""]
     block_len = 0
     for page in pages_text:
-        page_summary = gpt3_summarize_page(page)
+        page_summary = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=f"{page}\nTLDR:",
+            temperature=0.5,
+            max_tokens=300,
+        )["choices"][0]["text"]
+
         page_summary_len = len(page_summary)
         if block_len + page_summary_len < 1300:
             summary_pages[-1] += page_summary
