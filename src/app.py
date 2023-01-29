@@ -53,9 +53,10 @@ def extract():
     
     extract = Extract()
     transcript_blocks = extract.extract_pages(rand_file_name, file_type)
+    print(len(transcript_blocks))
     os.remove(rand_file_name)
     transcript_blocks, embedding_pages = extract.get_dict()
-    
+    print("This is a test")
     dict_info = {
         "title": title,
         "directory": directory,
@@ -116,6 +117,7 @@ def answer_question():
     print(prompt + answer)
     
     return json.dumps({"answer": answer})
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)

@@ -76,17 +76,18 @@ class Extract:
         raise NotImplementedError("word_office_to_text")
     
     def transcript_to_transcript_blocks(self):
-        block_size = 200 #
+        block_size = 500
         transcript_sentences = self.transcript.split(". ")
         for i, sentence in enumerate(transcript_sentences):
             # if the sentence is huge, add it to its own block
+            
             if len(sentence) > block_size:
                 self.transcript_blocks.append(sentence)
             # 3/4 time, add sentence to block
-            elif i % 4 != 3:
-                self.transcript_blocks[-1] += f"{sentence}. "
+            elif i % 15 == 0:
+                self.transcript_blocks.append(sentence + ". ")
             else:
-                self.transcript_blocks.append(sentence)
+                self.transcript_blocks[-1] += f"{sentence}. "
         return self.transcript_blocks
             
     def get_dict(self):
