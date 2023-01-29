@@ -3,8 +3,74 @@
 <head>
 	<meta charset="utf-8">
 	<title>Hello World</title>
+	<link rel="stylesheet" type="text/css" href="index.css" />
+	<link href='https://fonts.googleapis.com/css?family=Comfortaa' rel='stylesheet'>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 </head>
 <body>
-	<p>Initial commit</p>
+
+	<div id="header_div">
+		<p id="wiseup_title">WiseUp</p>
+		<img id="profile_icon" src="assets/profile_icon.png" alt="image description" />
+	</div>
+
+	<div id="page_body_div">
+
+		<!-- MENU -->
+		<div id="main_menu_div">
+			<div id="upload_menu_button" class="main_menu_button active_main_menu_button" onclick="go_to_upload_page()">
+				<p>Upload</p>
+			</div>
+			<div id="link_menu_button" class="main_menu_button" onclick="go_to_link_page()">
+				<p>Link</p>
+			</div>
+			<div id="record_menu_button" class="main_menu_button" onclick="go_to_record_page()">
+				<p>Record</p>
+			</div>
+		</div>
+
+
+		<!-- UPLOAD PAGE -->
+		<div id="upload_page_body">
+
+			<div id="upload_button_div">
+
+				<div style="display: flex; flex-direction: row;">
+					<img id="input_format_icon" src="assets/pdf_icon.png"/>
+					<p id="upload_text">Upload</p>
+				</div>
+
+				<img id="dropdown_icon" src="assets/dropdown_icon.png" />
+				
+			</div>
+
+			<div class="area">
+			    <input type="file" id="upload" />
+			</div>
+
+		</div>
+
+
+		<!-- LINK PAGE -->
+		<div style="display: none;" id="link_page_body">
+			
+			<div id="link_input_button_div">
+				<input type="text" id="link_input" placeholder="Enter Youtube link">
+				<div id="enter_link_button">
+					<img id="enter_link_icon" src="assets/forward_arrow.png"/>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+
+
+
+	<script type="text/javascript" src="index.js"></script>
 </body>
 </html>
