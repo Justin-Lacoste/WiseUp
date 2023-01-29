@@ -3,3 +3,4 @@ tiktoken
 pdfplumber
 Flask
 boto3
+numpy
