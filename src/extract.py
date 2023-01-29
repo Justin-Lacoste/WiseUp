@@ -10,13 +10,18 @@ import openai
 import numpy as np
 
 import config
-
 openai.api_key = config.OPENAI_API_KEY
+
+from settings import WHISPER_MODEL_NAME
 
 
 class Extract:
     def __init__(self):
         self.text_pages: List[str] = []
+
+    def text2text_pages(self, text:str):
+        #separer text en pages de ~500 mots
+        raise NotImplementedError("text2text_pages not implemented")
 
     def pdf2text(self, pdf_path):
         with pdfplumber.open(pdf_path) as pdf:
@@ -26,12 +31,12 @@ class Extract:
         return self.text_pages
 
     def mp3_to_text(self, mp3_path):
-        model = whisper.load_model(config.WHISPER_MODEL_NAME)
+        model = whisper.load_model(WHISPER_MODEL_NAME)
         self.text_pages = model.transcribe(mp3_path, language='english')["text"]
         return self.text_pages
 
     def mp4_to_text(self, mp4_path):
-        model = whisper.load_model(config.WHISPER_MODEL_NAME)
+        model = whisper.load_model(WHISPER_MODEL_NAME)
         self.text_pages = model.transcribe(mp4_path, language='english')["text"]
         return self.text_pages
 
@@ -52,7 +57,6 @@ class Extract:
         high_thresh = 750
         
         reformatted_pages = [""]
-        count = 0
         for page in self.text_pages:
             words_in_last_page = len(reformatted_pages[-1].split())
             words_in_cur_page = len(page.split())
@@ -66,7 +70,6 @@ class Extract:
                 half_page_i = len(page)//2
                 reformatted_pages.append(page[:half_page_i])
                 reformatted_pages.append(page[half_page_i:])
-                count += 2
             
             #condition 3, add the page to a new reformatting page
             else:
@@ -87,100 +90,18 @@ def get_json(pages_text: List[str]):
     return json.dumps({"pages_text": pages_text, "pages_embeddings": arr.tolist()})
 
 
-# def vector_similarity(x: list[float], y: list[float]) -> float:
-#     """
-#     Returns the similarity between two vectors.
-    
-#     Because OpenAI Embeddings are normalized to length 1, the cosine similarity is the same as the dot product.
-#     """
-#     return np.dot(np.array(x), np.array(y))
-
-
-# def order_document_sections_by_query_similarity(query: str, contexts: List[Dict[str, str]]) -> List[Dict[str, str]]:
-#     query_embedding = get_embedding(query)
-    
-#     document_similarities = []
-#     for context in contexts:
-#         similarity = vector_similarity(query_embedding, context["embedding"])
-#         document_similarities.append({"text": context["text"], "similarity": similarity})
-        
-#     document_similarities.sort(key=lambda x: x["similarity"], reverse=True)
-    
-#     return document_similarities
-
-
 if __name__ == "__main__":
     #testing
     
     # PDF
-    pdf_file = r'C:\Users\Henri\Documents\GitHub\WiseUp\src\Test\Floating Point.pdf'
+    pdf_file = r'src\Test\Floating Point.pdf'
     text_and_embeddings: List[Dict[str, str]] = []
 
-    extract = Extract()
+    e = Extract()
 
-    pages_text = extract.pdf2text(pdf_file)
-    extract.reformat_pages()
+    pages_text = e.pdf2text(pdf_file)
+    e.reformat_pages()
 
-    json = get_json(extract.text_pages)
+    json = get_json(e.text_pages)
     print(json)
-    
-    # # MP3
-    # mp3_file = r'C:\Users\Henri\Documents\GitHub\Project-Lawful-Audiobook - Copy\Audio\what the truth can destroy - episode 22 - excerpt.mp3'
-    # text_and_embeddings: List[Dict[str, str]] = []
 
-    # extract = Extract()
-
-    # pages_text = extract.mp3_to_text(mp3_file)
-    # extract.reformat_pages()
-
-    # json = get_json(extract.text_pages)
-    # print(json)
-    
-    # # MP4
-    # mp4_file = r'C:\Users\Henri\OneDrive - McGill University\VSC\MAIS Hacks\MAIS_Hacks_ScribeAI\videos\Aaron Paul wins an Emmy for Breaking Bad 2014.mp4'
-    # text_and_embeddings: List[Dict[str, str]] = []
-
-    # extract = Extract()
-
-    # pages_text = extract.mp4_to_text(mp4_file)
-    # extract.reformat_pages()
-
-    # json = get_json(extract.text_pages)
-    # print(json)
-    
-    # # Youtube
-    # youtube_link = "https://www.youtube.com/watch?v=_bcfxty39Cw"
-    # text_and_embeddings: List[Dict[str, str]] = []
-    
-    # extract = Extract()
-    
-    # pages_text = extract.youtube2text(youtube_link)
-    # extract.reformat_pages()
-    
-    # json = get_json(extract.text_pages)
-    # print(json)
-    
-    # # Github
-    # github_link = "https://github.com/Justin-Lacoste/WiseUp"
-    # text_and_embeddings: List[Dict[str, str]] = []
-    
-    # extract = Extract()
-    
-    # pages_text = extract.github2text(github_link)
-    # extract.reformat_pages()
-
-    # json = get_json(extract.text_pages)
-    # print(json)
-    
-    # # Word Office
-    # word_file = r'C:\Users\Henri\Documents\GitHub\WiseUp\src\Test\test.docx'
-    # text_and_embeddings: List[Dict[str, str]] = []
-    
-    # extract = Extract()
-    
-    # pages_text = extract.word_office_to_text(word_file)
-    # extract.reformat_pages()
-
-    # json = get_json(extract.text_pages)
-    # print(json)
-    
