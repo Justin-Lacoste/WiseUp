@@ -53,10 +53,8 @@ def extract():
     
     extract = Extract()
     transcript_blocks = extract.extract_pages(rand_file_name, file_type)
-    print(len(transcript_blocks))
     os.remove(rand_file_name)
     transcript_blocks, embedding_pages = extract.get_dict()
-    print("This is a test")
     dict_info = {
         "title": title,
         "directory": directory,
