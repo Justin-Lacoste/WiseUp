@@ -2,3 +2,6 @@ openai
 tiktoken
 pdfplumber
 Flask
+boto3
+numpy
+cohere
